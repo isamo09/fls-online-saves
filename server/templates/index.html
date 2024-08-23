@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FSL Exploit Overview</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            color: #fff;
+        }
+        .container {
+            position: relative;
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        .header {
+            width: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            padding: 10px;
+            text-align: center;
+            z-index: 1000;
+        }
+        .header button {
+            background: #fff;
+            color: #333;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 0 5px;
+            font-weight: bold;
+        }
+        .header button:hover {
+            background: #ff6347;
+            color: #fff;
+        }
+        .section {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            box-sizing: border-box;
+            opacity: 0;
+            transform: translateY(100px);
+            transition: all 1s ease;
+        }
+        .section.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        #section1 { background: linear-gradient(120deg, #4b0082, #000); }
+        #section2 { background: linear-gradient(120deg, #8a2be2, #0000ff); }
+        #section3 { background: linear-gradient(120deg, #0000ff, #ff4500); }
+        #section4 { background: linear-gradient(120deg, #ff4500, #ff8c00); }
+        #section6 { background: linear-gradient(120deg, #4b0082, #000); }
+        #section5 {
+            background: linear-gradient(120deg, #ff00ff, #00ffff, #ff4500, #ffff00);
+            background-size: 300% 300%;
+            animation: gradientShift 15s ease infinite;
+        }
+        @keyframes gradientShift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+        h1, h2, p {
+            text-align: center;
+        }
+        p {
+            line-height: 1.6;
+        }
+        a {
+            color: #ff6347;
+            text-decoration: none;
+            font-weight: bold;
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="header">
+        <button onclick="showSection(1)">Home</button>
+        <button onclick="showSection(2)">Technical Details</button>
+        <button onclick="showSection(3)">Cheat money</button>
+        <button onclick="showSection(4)">Frequently asked questions</button>
+        <button onclick="showSection(5)">Further Reading and Resources</button>
+        <button onclick="showSection(6)">DOWNLOAD</button>
+    </div>
+
+    <div id="section1" class="section active">
+        <div>
+            <h1>FSL Exploit Overview</h1>
+            <h2>FSL for GTA Online</h2>
+            <p>The FSL exploit was developed in Poland and published on the forum, its essence is to redirect saves from Rockstar servers to a local file, thereby allowing you to make local saves for GTA online
+</p>
+        </div>
+    </div>
+
+    <div id="section2" class="section">
+        <div>
+            <h2>Technical Details</h2>
+            <p>Saves
+
+FSL will attempt to download your actual online save file when no local saves are found. All subsequent save and load requests will be redirected to your local hard drive. This means that your save data isn’t stored in Rockstar’s servers anymore; you would use your actual online save when you disable FSL, and your local save when you enable it again
+
+All save data files are stored in %APPDATA%/FSL. While the tool creates backups regularly, you are strongly advised to maintain your own backups in a safe location. Be aware that everything inside %APPDATA% will be wiped during a Windows reset
+</p>
+        </div>
+    </div>
+
+    <div id="section3" class="section">
+        <div>
+            <h2>Cheat money</h2>
+            <p>FSL allows you to earn money in the local save of GTA online; for this you need to enter the cheat code on ~
+here is the list of codes: 1M: Adds $1M 10M: Adds $10M 100M: Adds $100M 1B: Adds $1B 10B: Adds $10B</p>
+        </div>
+    </div>
+
+    <div id="section4" class="section">
+        <div>
+            <h2>Frequently asked questions</h2>
+            <h3>Is this safe?</h3>
+            <p>This should be (nearly) undetectable since your saves never reach Rockstar’s servers. That doesn’t stop them from trying to sig this tool, so it is recommended to load a menu with a working anti-cheat bypass whenever you go online</p>
+            <h3>Can I edit my saves?</h3>
+            <p>There are no tools to edit save files yet. You can, however, use CodeWalker to view them</p>
+            <h3>Can I share my save files with other people?</h3>
+            <p>Yes</p>
+
+        </div>
+    </div>
+
+    <div id="section5" class="section">
+        <div>
+            <h2>Further Reading and Resources</h2>
+            <p>I implemented a server for storing local saves in the cloud, I have nothing to do with the development of the exploit itself <a href="https://github.com/isamo09/fls-online-saves" target="_blank">Here is the source code of the server and client GitHub</a>. Additional resources and documentation can be found there.</p>
+            <p>https://github.com/isamo09/fls-online-saves/</p>
+        </div>
+    </div>
+
+    <div id="section6" class="section">
+        <div>
+            <h2>Download</h2>
+            <p>to run the exploit you need to put the <a href="https://github.com/isamo09/fls-online-saves/raw/main/FSL/version.dll" target="_blank">version.dll</a> file in the root of the game folder, you can also use the <a href="https://github.com/isamo09/fls-online-saves/releases/download/v1.0.0/main.exe" target="_blank">save manager</a> if you wish </p>
+            <p>if you are blocked in GTA Online or for any other reason you cannot load your save, use a <a href="https://github.com/isamo09/fls-online-saves/raw/main/FSL/clear_saves.zip" target="_blank">clean save</a> extract it to %AppData%\Roaming\FSL</p>
+            <p>I implemented a server for storing local saves in the cloud, I have nothing to do with the development of the exploit itself <a href="https://github.com/isamo09/fls-online-saves" target="_blank">Here is the source code of the server and client GitHub</a>
+        </div>
+    </div>
+</div>
+
+<script>
+    let currentSection = 1;
+
+    function showSection(section) {
+        document.querySelector(`#section${currentSection}`).classList.remove('active');
+        currentSection = section;
+        document.querySelector(`#section${currentSection}`).classList.add('active');
+    }
+
+    document.addEventListener('wheel', function(event) {
+        if (event.deltaY > 0 && currentSection < 5) {
+            showSection(currentSection + 1);
+        } else if (event.deltaY < 0 && currentSection > 1) {
+            showSection(currentSection - 1);
+        }
+    });
+
+    document.addEventListener('keydown', function(event) {
+        if (event.key === 'ArrowRight' && currentSection < 5) {
+            showSection(currentSection + 1);
+        } else if (event.key === 'ArrowLeft' && currentSection > 1) {
+            showSection(currentSection - 1);
+        }
+    });
+</script>
+
+</body>
+</html>
