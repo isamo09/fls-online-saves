@@ -9,7 +9,7 @@ app = Flask(__name__)
 
 DATA_FILE = "data.json"
 DATA_DIR = "data"
-version = "1.0.0"
+version = "1.0.1"
 
 
 def load_data():
