@@ -5,12 +5,13 @@ from datetime import datetime
 import zipfile
 import webbrowser
 
-SERVER_URL = "https://FSL.pythonanywhere.com"
+SERVER_URL = "https://fsl.pythonanywhere.com"
 CONFIG_FILE = "client_config.json"
 user_name = os.getlogin()
 FSL_dir = f"C:\\Users\\{user_name}\\AppData\\Roaming\\FSL"
 data_path = f"{FSL_dir}/data.json"
 allov_print = False
+
 
 def start():
     url = "steam://rungameid/271590"
@@ -67,12 +68,19 @@ def save_value(file, key, value):
 
 
 def read_value(file, key):
+    if not os.path.exists(file):
+        with open(file, "w") as f:
+            json.dump({}, f)
+
     try:
         with open(file, "r") as f:
             data = json.load(f)
-            return data.get(key)
-    except FileNotFoundError:
-        print("Файл не найден.")
+            if key not in data:
+                data[key] = None
+
+            return data[key]
+    except Exception as e:
+        print(f"Ошибка при чтении файла: {str(e)}")
         return None
 
 
@@ -95,7 +103,7 @@ def rm_local_save():
         pass
 
 
-def check_date():
+def download_latest():
     file_path = os.path.join(FSL_dir, "save_default0000.pso")
     file_mod_time = os.path.getmtime(file_path)
     file_mod_date = datetime.fromtimestamp(file_mod_time)
@@ -153,7 +161,7 @@ def upload_save():
         print("Файл save_default0000.pso не найден. Загрузка сохранений не будет выполнена.")
         return
 
-    zip_filename = f"{read_value(CONFIG_FILE, 'active_slot')}.zip"
+    zip_filename = f"{read_value(CONFIG_FILE, "active_slot")}.zip"
     zip_filepath = os.path.join(FSL_dir, zip_filename)
 
     with zipfile.ZipFile(zip_filepath, "w") as zip_file:
@@ -216,7 +224,7 @@ def get_status():
         print(f"error: {response.text}")
 
 
-def get_info():
+def get_info(prints=None):
     payload = {
         "access_key": f"{read_value(CONFIG_FILE, "access_key")}"
     }
@@ -228,7 +236,7 @@ def get_info():
         save_1 = json_data.get("save 1")
         save_2 = json_data.get("save 2")
         save_3 = json_data.get("save 3")
-        if allov_print:
+        if prints:
 
             print(f"save 1: {save_1}")
             print(f"save 2: {save_2}")
@@ -263,63 +271,77 @@ def main():
 
     print("\nWaiting for commands... print help for help")
     while True:
-        command = input(">>>").strip().lower()
-        if command == "exit":
+        command = input(">>>").strip().lower().split(" ")
+        if command[0] == "exit":
             print("Exiting...")
             break
-        elif command == "select":
-            slot = int(input("slot (1 - 3) >>"))
+        elif command[0] == "select":
+            try:
+                slot = int(command[1])
+            except TypeError and IndexError:
+                print(f"uncorrected")
+                slot = int(input("slot (1 - 3) >>"))
+                if slot not in [1, 2, 3]:
+                    print("allow slots 1, 2, 3")
+                else:
+                    save_value(CONFIG_FILE, "active_slot", slot)
+
             if slot not in [1, 2, 3]:
                 print("allow slots 1, 2, 3")
             else:
                 save_value(CONFIG_FILE, "active_slot", slot)
                 print(f"selected slot {slot}")
 
-        elif command == "help":
+        elif command[0] == "help":
             print("commands: \n"
                   "- help\n"
                   "- status: get status from server\n"
                   "- info\n"
                   f"- select: specify slot, selected slot: {read_value(CONFIG_FILE, "active_slot")}\n"
                   "- download: to download selected save from server\n"
+                  "- download_latest: will load the latest save from the server"
                   "- upload: to upload selected save from server\n"
                   "- delete: to delete save from the server\n"
                   "- logout\n"
                   "- exit\n"
                   )
 
-        elif command == "start":
+        elif command[0] == "start":
             start()
 
-        elif command == "status":
+        elif command[0] == "status":
             try:
                 get_status()
             except:
                 print("error")
 
-        elif command == "download":
+        elif command[0] == "download":
             try:
                 download_save(read_value(CONFIG_FILE, "active_slot"))
             except:
                 print("fall download")
 
-        elif command == "upload":
+        elif command[0] == "download_latest":
+            try:
+                download_latest()
+            except:
+                print("fall download")
+
+        elif command[0] == "upload":
             try:
                 upload_save()
             except:
                 print("fall upload")
 
-        elif command == "info":
-            allov_print = True
-            get_info()
-            allov_print = False
+        elif command[0] == "info":
+            get_info(True)
 
-        elif command == "delete":
+        elif command[0] == "delete":
             if not read_value(CONFIG_FILE, "active_slot"):
                 print("slot not selected, print select to select slot")
             else:
                 if input(f"do you really want to delete the save {read_value(CONFIG_FILE, "active_slot")}?\n"
-                         f"print yes to continue >>") in {"Y", "y", "YES", "yes"}:
+                         f"print yes to continue >>") in {"Y", "y", "YES", "yes", "Yes"}:
                     try:
                         delete_save()
                         print("deletion complited")
@@ -329,7 +351,7 @@ def main():
                 else:
                     print("deletion canceled")
 
-        elif command == "logout":
+        elif command[0] == "logout":
             logout()
             login, password = get_credentials()
             access_key = authenticate(login, password)
@@ -340,7 +362,7 @@ def main():
             else:
                 print("Authentication failed.")
         else:
-            print(f"not command \"{command}\"\n"
+            print(f"not command \"{command[0]}\"\n"
                   f"help to viev command list")
 
 
