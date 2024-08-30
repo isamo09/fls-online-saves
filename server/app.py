@@ -21,7 +21,7 @@ def load_data():
 
 
 def save_data(data):
-    with open(DATA_FILE, 'w') as file:
+    with open(DATA_FILE, "w") as file:
         json.dump(data, file)
 
 
