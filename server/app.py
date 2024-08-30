@@ -9,7 +9,7 @@ app = Flask(__name__)
 
 DATA_FILE = "data.json"
 DATA_DIR = "data"
-version = "1.0.1"
+version = "1.0.3"
 
 
 def load_data():
@@ -184,39 +184,49 @@ def upload_save(slot):
 
 @app.route("/save/delite/<slot>", methods=["POST"])
 def delite(slot):
-    user_data = request.form
+    user_data = request.json
     access_key = user_data.get("access_key")
+
+    if not access_key:
+        return jsonify({"error": "access key is required"}), 400
 
     login = get_login_by_access_key(access_key)
 
-    if slot == "1":
-        slot = "1.zip"
-    elif slot == "2":
-        slot = "2.zip"
-    elif slot == "3":
-        slot = "3.zip"
-    else:
+    if not login:
+        return jsonify({"error": "Invalid access key"}), 401
+
+    if slot not in ["1", "2", "3"]:
         return jsonify({"error": "Invalid slot"}), 400
 
+    slot_file = f"{slot}.zip"
+
     try:
-        os.remove(f"data/{login}/{slot}")
+        file_path = f"data/{login}/{slot_file}"
+        if os.path.exists(file_path):
+            os.remove(file_path)
+        else:
+            return jsonify({"error": "File not found"}), 404
+
+        user_dir = os.path.join(DATA_DIR, login)
+        user_save_file = os.path.join(user_dir, "saves.json")
+
+        if os.path.exists(user_save_file):
+            with open(user_save_file, "r") as file:
+                data = json.load(file)
+
+            key_to_remove = f"save {slot}"
+            if key_to_remove in data:
+                del data[key_to_remove]
+
+                with open(user_save_file, "w") as file:
+                    json.dump(data, file, indent=4)
+        else:
+            return jsonify({"error": "Save data not found"}), 404
+
+        return jsonify({"message": "File deleted successfully"}), 200
+
     except Exception as e:
         return jsonify({"error": str(e)}), 500
-
-    save_patch = json.loads(f"data/{login}/saves.json")
-    with open(save_patch, "r") as file:
-        data = json.load(file)
-
-    if slot in [1, 2, 3]:
-        key_to_remove = f"save {slot}"
-
-        if key_to_remove in data:
-            del data[key_to_remove]
-
-            with open(save_patch, "w") as file:
-                json.dump(data, file, indent=4)
-    else:
-        return "No correct slot"
 
 
 if __name__ == "__main__":
