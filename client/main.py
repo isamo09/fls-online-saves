@@ -299,7 +299,7 @@ def main():
                   "- info\n"
                   f"- select: specify slot, selected slot: {read_value(CONFIG_FILE, "active_slot")}\n"
                   "- download: to download selected save from server\n"
-                  "- download_latest: will load the latest save from the server"
+                  "- download_latest: will load the latest save from the server\n"
                   "- upload: to upload selected save from server\n"
                   "- delete: to delete save from the server\n"
                   "- logout\n"
